@@ -4,18 +4,18 @@ let state = {
 };
 
 //State modification functions
-let addItem = function(state, item) {
+const addItem = function(state, item) {
   state.items.push(item);
 };
 
-let removeItem = function(state, item) {
- let deleter = state.items.indexOf(item);
-  state.items.splice(deleter, 1);
+const removeItem = function(state, item) {
+  state.items.splice(state.items.indexOf(item), 1);
 };
 
 // Render functions
-var renderList = function(state, element) {
-  var itemsHTML = state.items.map(function(item) {
+const renderList = function(state) {
+  let element = $('.shopping-list');
+  let itemsHTML = state.items.map(function(item) {
     return(
     `<li>
         <span class="shopping-item">${item}</span>
@@ -36,14 +36,15 @@ var renderList = function(state, element) {
 $('#js-shopping-list-form').submit(function(event){
   event.preventDefault();
   addItem(state, $('#shopping-list-entry').val());
-  renderList(state, $('.shopping-list'));
+  renderList(state);
+  $('#shopping-list-entry').val("");
 });
 
 $('ul').on('click', 'button.shopping-item-delete', function(event){
-  $(event.target).closest('li').remove();
-  removeItem(state, $('#shopping-list-entry').val());
-})
+  removeItem(state, $(this).closest('li').find('span.shopping-item').text());
+  renderList(state);
+});
 
-$('ul').on('click','button.shopping-item-toggle', function(event){
+$('ul').on('click','button.shopping-item-toggle', function(){
   $(this).closest('li').find('span.shopping-item').toggleClass('shopping-item__checked');
-})
+});
